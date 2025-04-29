@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>What's My Ring Size? - International Sizing Guide</title>
     <style>
     * {
@@ -83,7 +83,7 @@
       width: 100%;
     }
 
-    .adjust-button {
+    .adjust-button { font-size: 18px; touch-action: manipulation;
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -145,7 +145,7 @@
       cursor: pointer;
     }
 
-    canvas {
+    canvas { width: 100%; height: auto; max-height: 80vh; touch-action: none;
       border: 1px solid #ddd;
       background-color: white;
       max-width: 100%;
