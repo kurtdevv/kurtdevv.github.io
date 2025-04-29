@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What's My Ring Size? - International Sizing Guide</title>
+    <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .size-display {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .size-card {
+      background-color: #f8f8f8;
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+      flex: 1;
+      margin: 0 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background-color 0.2s;
+    }
+
+    .size-card:hover {
+      background-color: #f0f0f0;
+    }
+
+    .size-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .size-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .size-adjustments {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .adjust-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4a90e2;
+      color: white;
+      font-size: 20px;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background-color 0.2s;
+    }
+
+    .adjust-button:hover {
+      background-color: #357abd;
+    }
+
+    .adjust-button:active {
+      background-color: #2a5d99;
+    }
+
+    .diameter-display {
+      width: 100px;
+      text-align: center;
+      margin: 0 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .standard-selector {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .instruction {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      overflow: hidden;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    canvas {
+      border: 1px solid #ddd;
+      background-color: white;
+      max-width: 100%;
+      height: auto;
+      touch-action: none;
+    }
+
+    .disclaimer {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 20px;
+      max-width: 500px;
+    }
+
+    @media (max-width: 600px) {
+      .size-display {
+        flex-direction: column;
+      }
+
+      .size-card {
+        margin: 5px 0;
+      }
+    }
+
+    .credit {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+<h1>What's My Ring Size?</h1>
+<p class="instruction" style="margin-top: -5px; margin-bottom: 15px;">International ring sizing guide</p>
+
+<div class="controls">
+    <p class="instruction">Tap or click to set the center of the circle, then adjust the size using the buttons below until the white circle matches your ring or finger.</p>
+
+    <div class="size-display">
+        <div class="size-card">
+            <div class="size-label">US/CAN</div>
+            <div class="size-value" id="us-size">-</div>
+        </div>
+        <div class="size-card">
+            <div class="size-label">UK/AU</div>
+            <div class="size-value" id="uk-size">-</div>
+        </div>
+        <div class="size-card">
+            <div class="size-label">EU/FR</div>
+            <div class="size-value" id="fr-size">-</div>
+        </div>
+    </div>
+    <div class="size-display">
+        <div class="size-card">
+            <div class="size-label">German</div>
+            <div class="size-value" id="de-size">-</div>
+        </div>
+        <div class="size-card">
+            <div class="size-label">Japanese</div>
+            <div class="size-value" id="jp-size">-</div>
+        </div>
+        <div class="size-card">
+            <div class="size-label">Swiss</div>
+            <div class="size-value" id="ch-size">-</div>
+        </div>
+    </div>
+    <div class="size-display">
+        <div class="size-card">
+            <div class="size-label">Diameter (mm)</div>
+            <div class="size-value" id="mm-size">-</div>
+        </div>
+        <div class="size-card">
+            <div class="size-label">Circumference</div>
+            <div class="size-value" id="circ-size">-</div>
+        </div>
+        <div class="size-card" style="background-color: #fff8e1;">
+            <div class="size-label">Custom Size</div>
+            <div class="size-value" id="custom-size">-</div>
+        </div>
+    </div>
+
+    <div class="size-adjustments">
+        <button class="adjust-button" id="decrease">-</button>
+        <div class="diameter-display" id="diameter-display">0.0 mm</div>
+        <button class="adjust-button" id="increase">+</button>
+    </div>
+
+    <select class="standard-selector" id="increment-select">
+        <option value="0.1">Fine (0.1mm increments)</option>
+        <option value="0.5" selected>Medium (0.5mm increments)</option>
+        <option value="1.0">Coarse (1.0mm increments)</option>
+    </select>
+</div>
+
+<div class="canvas-container">
+    <canvas id="ringCanvas"></canvas>
+</div>
+
+<p class="disclaimer">For the most accurate results, ensure your device display is correctly calibrated. This tool provides an estimation and is not a substitute for professional sizing. Custom sizes (not aligned with standard measurements) are available from many jewelers and can be manufactured upon request.</p>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const canvas = document.getElementById('ringCanvas');
+      const ctx = canvas.getContext('2d');
+      const decreaseBtn = document.getElementById('decrease');
+      const increaseBtn = document.getElementById('increase');
+      const diameterDisplay = document.getElementById('diameter-display');
+      const incrementSelect = document.getElementById('increment-select');
+      const usSizeDisplay = document.getElementById('us-size');
+      const ukSizeDisplay = document.getElementById('uk-size');
+      const euSizeDisplay = document.getElementById('eu-size');
+      const mmSizeDisplay = document.getElementById('mm-size');
+
+      // Initialize variables
+      let centerX = null;
+      let centerY = null;
+      let diameter = 17.0; // Starting diameter in mm
+      let increment = 0.5; // Default increment
+
+      // RingSizeCalculator class for managing ring size data and conversions
+      class RingSizeCalculator {
+        constructor() {
+          // Complete international ring size conversion chart
+          this.ringSizes = [
+            { mm: 9.91, inches: 0.390, circumference: 31.13, british: "-", us: "00", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 10.72, inches: 0.422, circumference: 33.68, british: "-", us: "0", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 11.53, inches: 0.454, circumference: 36.22, british: "-", us: "0", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 11.95, inches: 0.474, circumference: 37.54, british: "A 1/2", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 12.18, inches: 0.482, circumference: 38.26, british: "A 1/2", us: "3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 12.37, inches: 0.487, circumference: 38.86, british: "B", us: "1", french: "", german: "1", japanese: "", swiss: "" },
+            { mm: 12.60, inches: 0.496, circumference: 39.58, british: "B 1/2", us: "1 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 12.78, inches: 0.503, circumference: 40.15, british: "C", us: "1 1/2", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 13.00, inches: 0.512, circumference: 40.84, british: "C 1/2", us: "1 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 13.21, inches: 0.520, circumference: 41.50, british: "D", us: "2", french: "41 1/2", german: "13 1/2", japanese: "2", swiss: "1 1/2" },
+            { mm: 13.41, inches: 0.528, circumference: 42.13, british: "D 1/2", us: "2 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 13.61, inches: 0.536, circumference: 42.76, british: "E", us: "2 1/2", french: "42 3/4", german: "13 3/4", japanese: "3", swiss: "2 3/4" },
+            { mm: 13.83, inches: 0.544, circumference: 43.45, british: "E 1/2", us: "2 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 14.05, inches: 0.553, circumference: 44.14, british: "F", us: "3", french: "44", german: "14", japanese: "4", swiss: "4" },
+            { mm: 14.15, inches: 0.557, circumference: 44.45, british: "F 1/2", us: "3 1/8", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 14.25, inches: 0.561, circumference: 44.77, british: "F 3/4", us: "3 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 14.36, inches: 0.565, circumference: 45.11, british: "G", us: "3 3/8", french: "45 1/4", german: "", japanese: "5", swiss: "5 1/4" },
+            { mm: 14.45, inches: 0.569, circumference: 45.40, british: "G 1/4", us: "3 1/2", french: "", german: "14 1/2", japanese: "", swiss: "" },
+            { mm: 14.56, inches: 0.573, circumference: 45.74, british: "G 1/2", us: "3 5/8", french: "", german: "", japanese: "6", swiss: "" },
+            { mm: 14.65, inches: 0.577, circumference: 46.02, british: "H", us: "3 3/4", french: "46 1/2", german: "", japanese: "", swiss: "6 1/2" },
+            { mm: 14.86, inches: 0.585, circumference: 46.68, british: "H 1/2", us: "4", french: "", german: "15", japanese: "7", swiss: "" },
+            { mm: 15.04, inches: 0.592, circumference: 47.25, british: "I", us: "4 1/4", french: "47 3/4", german: "", japanese: "", swiss: "7 3/4" },
+            { mm: 15.27, inches: 0.601, circumference: 47.97, british: "I 1/2", us: "4 1/2", french: "", german: "15 1/4", japanese: "8", swiss: "" },
+            { mm: 15.40, inches: 0.606, circumference: 48.38, british: "J", us: "4 5/8", french: "49", german: "15 1/2", japanese: "", swiss: "9" },
+            { mm: 15.53, inches: 0.611, circumference: 48.79, british: "J 1/4", us: "4 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 15.70, inches: 0.618, circumference: 49.32, british: "J 1/2", us: "5", french: "", german: "15 3/4", japanese: "9", swiss: "" },
+            { mm: 15.80, inches: 0.622, circumference: 49.64, british: "K", us: "5 1/8", french: "50", german: "", japanese: "", swiss: "10" },
+            { mm: 15.90, inches: 0.626, circumference: 49.95, british: "K 1/4", us: "5 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 16.00, inches: 0.630, circumference: 50.27, british: "K 1/2", us: "5 3/8", french: "", german: "", japanese: "10", swiss: "" },
+            { mm: 16.10, inches: 0.634, circumference: 50.58, british: "L", us: "5 1/2", french: "51 3/4", german: "16", japanese: "", swiss: "11 3/4" },
+            { mm: 16.30, inches: 0.642, circumference: 51.21, british: "L 1/4", us: "5 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 16.41, inches: 0.646, circumference: 51.55, british: "L 1/2", us: "5 7/8", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 16.51, inches: 0.650, circumference: 51.87, british: "M", us: "6", french: "52 3/4", german: "16 1/2", japanese: "12", swiss: "12 3/4" },
+            { mm: 16.71, inches: 0.658, circumference: 52.50, british: "M 1/2", us: "6 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 16.92, inches: 0.666, circumference: 53.16, british: "N", us: "6 1/2", french: "54", german: "17", japanese: "13", swiss: "14" },
+            { mm: 17.13, inches: 0.674, circumference: 53.82, british: "N 1/2", us: "6 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 17.35, inches: 0.683, circumference: 54.51, british: "O", us: "7", french: "55 1/4", german: "17 1/4", japanese: "14", swiss: "15 1/4" },
+            { mm: 17.45, inches: 0.687, circumference: 54.82, british: "O 1/2", us: "7 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 17.75, inches: 0.699, circumference: 55.76, british: "P", us: "7 1/2", french: "56 1/2", german: "17 3/4", japanese: "15", swiss: "16 1/2" },
+            { mm: 17.97, inches: 0.707, circumference: 56.45, british: "P 1/2", us: "7 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 18.19, inches: 0.716, circumference: 57.15, british: "Q", us: "8", french: "57 3/4", german: "18", japanese: "16", swiss: "17 3/4" },
+            { mm: 18.35, inches: 0.722, circumference: 57.65, british: "Q 1/2", us: "8 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 18.53, inches: 0.729, circumference: 58.21, british: "Q 3/4", us: "8 1/2", french: "", german: "18 1/2", japanese: "17", swiss: "" },
+            { mm: 18.61, inches: 0.733, circumference: 58.47, british: "R", us: "8 5/8", french: "59", german: "", japanese: "", swiss: "19" },
+            { mm: 18.69, inches: 0.736, circumference: 58.72, british: "R 1/4", us: "8 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 18.80, inches: 0.740, circumference: 59.06, british: "R 1/2", us: "8 7/8", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 18.89, inches: 0.748, circumference: 59.34, british: "R 3/4", us: "9", french: "", german: "19", japanese: "18", swiss: "" },
+            { mm: 19.10, inches: 0.752, circumference: 60.00, british: "S", us: "9 1/8", french: "60 1/4", german: "", japanese: "", swiss: "20 1/4" },
+            { mm: 19.22, inches: 0.757, circumference: 60.38, british: "S 1/4", us: "9 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 19.31, inches: 0.760, circumference: 60.66, british: "S 1/2", us: "9 3/8", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 19.41, inches: 0.764, circumference: 60.98, british: "S 3/4", us: "9 1/2", french: "", german: "19 1/2", japanese: "19", swiss: "" },
+            { mm: 19.51, inches: 0.768, circumference: 61.29, british: "T", us: "9 5/8", french: "61 1/2", german: "", japanese: "", swiss: "21 1/2" },
+            { mm: 19.62, inches: 0.772, circumference: 61.64, british: "T 1/4", us: "9 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 19.84, inches: 0.781, circumference: 62.33, british: "T 1/2", us: "10", french: "", german: "20", japanese: "20", swiss: "" },
+            { mm: 20.02, inches: 0.788, circumference: 62.89, british: "U", us: "10 1/4", french: "62 3/4", german: "", japanese: "21", japanese: "22 3/4" },
+            { mm: 20.20, inches: 0.797, circumference: 63.46, british: "U 1/2", us: "10 1/2", french: "", german: "20 1/4", japanese: "22", swiss: "" },
+            { mm: 20.32, inches: 0.800, circumference: 63.84, british: "V", us: "10 5/8", french: "63", german: "", japanese: "", swiss: "23 3/4" },
+            { mm: 20.44, inches: 0.805, circumference: 64.21, british: "V 1/4", us: "10 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 20.68, inches: 0.814, circumference: 64.97, british: "V 1/2", us: "11", french: "", german: "20 3/4", japanese: "23", swiss: "" },
+            { mm: 20.76, inches: 0.817, circumference: 65.22, british: "W", us: "11 1/8", french: "65", german: "", japanese: "", swiss: "25" },
+            { mm: 20.85, inches: 0.821, circumference: 65.50, british: "W 1/4", us: "11 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 20.94, inches: 0.824, circumference: 65.78, british: "W 1/2", us: "11 3/8", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 21.08, inches: 0.830, circumference: 66.22, british: "W 3/4", us: "11 1/2", french: "", german: "21", japanese: "24", swiss: "" },
+            { mm: 21.18, inches: 0.834, circumference: 66.54, british: "X", us: "11 5/8", french: "66 1/4", german: "", japanese: "", swiss: "26 1/4" },
+            { mm: 21.24, inches: 0.836, circumference: 66.73, british: "X 1/4", us: "11 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 21.30, inches: 0.839, circumference: 66.92, british: "X 1/2", us: "11 7/8", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 21.49, inches: 0.846, circumference: 67.51, british: "Y", us: "12", french: "67 1/2", german: "21 1/4", japanese: "25", swiss: "27 1/4" },
+            { mm: 21.69, inches: 0.854, circumference: 68.14, british: "Y 1/2", us: "12 1/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 21.89, inches: 0.862, circumference: 68.77, british: "Z", us: "12 1/2", french: "68 3/4", german: "21 3/4", japanese: "26", swiss: "28 3/4" },
+            { mm: 22.10, inches: 0.870, circumference: 69.43, british: "Z +1/2", us: "12 3/4", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 22.33, inches: 0.879, circumference: 70.15, british: "Z+1", us: "13", french: "", german: "22", japanese: "27", swiss: "" },
+            { mm: 22.60, inches: 0.890, circumference: 71.00, british: "Z+1.5", us: "13.5", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 22.69, inches: 0.893, circumference: 71.28, british: "Z+2", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 22.92, inches: 0.902, circumference: 72.00, british: "Z+2.5", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 23.06, inches: 0.908, circumference: 72.45, british: "Z+3", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 23.24, inches: 0.915, circumference: 73.01, british: "Z+3.5", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 23.47, inches: 0.924, circumference: 73.73, british: "Z+4", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 23.55, inches: 0.927, circumference: 73.98, british: "Z+4.5", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 23.87, inches: 0.940, circumference: 74.99, british: "Z+5", us: "", french: "", german: "", japanese: "", swiss: "" },
+            { mm: 24.27, inches: 0.956, circumference: 76.25, british: "Z+6", us: "", french: "", german: "", japanese: "", swiss: "" }
+          ];
+        }
+
+        // Find the closest ring size to the given diameter in mm
+        getClosestSize(diameterMm) {
+          let closestSize = this.ringSizes[0];
+          let minDiff = Math.abs(diameterMm - this.ringSizes[0].mm);
+
+          for (let i = 1; i < this.ringSizes.length; i++) {
+            const diff = Math.abs(diameterMm - this.ringSizes[i].mm);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closestSize = this.ringSizes[i];
+            }
+          }
+
+          return closestSize;
+        }
+
+        // Get all ring size information based on diameter in mm
+        getSizeInfo(diameterMm) {
+          const size = this.getClosestSize(diameterMm);
+          return {
+            mm: diameterMm.toFixed(2),
+            inches: (diameterMm / 25.4).toFixed(3),
+            circumference: (Math.PI * diameterMm).toFixed(2),
+            british: size.british || "-",
+            us: size.us || "-",
+            french: size.french || "-",
+            german: size.german || "-",
+            japanese: size.japanese || "-",
+            swiss: size.swiss || "-"
+          };
+        }
+      }
+
+      // Create an instance of the calculator
+      const ringSizeCalculator = new RingSizeCalculator();
+
+      // Function to get the physical pixel ratio of the device
+      function getPixelRatio(context) {
+        const dpr = window.devicePixelRatio || 1;
+        return dpr;
+      }
+
+      // Function to resize canvas to fit the container and maintain aspect ratio
+      function resizeCanvas() {
+        const container = document.querySelector('.canvas-container');
+        const containerWidth = container.clientWidth;
+        const containerHeight = window.innerHeight * 0.5; // 50% of viewport height
+
+        canvas.width = containerWidth;
+        canvas.height = containerHeight;
+
+        // If center hasn't been set yet, initialize it to the middle of the canvas
+        if (centerX === null || centerY === null) {
+          centerX = canvas.width / 2;
+          centerY = canvas.height / 2;
+        }
+
+        drawCircle();
+      }
+
+      // Convert mm to pixels based on device pixel density
+      function mmToPixels(mm) {
+        // Standard pixel density is 96 DPI (dots per inch)
+        // 1 inch = 25.4 mm
+        // So 1 mm = 96/25.4 pixels in standard density
+        const pixelRatio = getPixelRatio(ctx);
+
+        // This is a key calculation for accuracy - applying device pixel ratio
+        return (mm * 96 / 25.4) * pixelRatio;
+      }
+
+      // Function to draw the circle with concentric borders
+      function drawCircle() {
+        if (centerX === null || centerY === null) return;
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Convert diameter from mm to pixels
+        const radiusInPixels = mmToPixels(diameter/2);
+
+        // Draw red outer border (2mm wider) - more visible now
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radiusInPixels + mmToPixels(2), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Increased opacity from 0.2 to 0.4
+        ctx.fill();
+
+        // Draw green middle border (1mm wider) - more visible now
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radiusInPixels + mmToPixels(1), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 180, 0, 0.4)'; // Changed from 255 to 180 for deeper green and 0.2 to 0.4 opacity
+        ctx.fill();
+
+        // Draw white circle (actual size)
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radiusInPixels, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#ddd';
+        ctx.stroke();
+
+        // Draw a tiny dot at the center for reference
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'black';
+        ctx.fill();
+
+        // Draw horizontal and vertical lines through the center for alignment
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(canvas.width, centerY);
+        ctx.moveTo(centerX, 0);
+        ctx.lineTo(centerX, canvas.height);
+        ctx.stroke();
+
+        // Update the diameter display
+        diameterDisplay.textContent = `${diameter.toFixed(1)} mm`;
+
+        // Update the ring size displays
+        updateRingSizeDisplays();
+      }
+
+      // Get references to the new size displays
+      const frSizeDisplay = document.getElementById('fr-size');
+      const deSizeDisplay = document.getElementById('de-size');
+      const jpSizeDisplay = document.getElementById('jp-size');
+      const chSizeDisplay = document.getElementById('ch-size');
+      const circSizeDisplay = document.getElementById('circ-size');
+
+      // Function to update all ring size displays using the calculator
+      function updateRingSizeDisplays() {
+        // Get comprehensive size information from the calculator
+        const sizeInfo = ringSizeCalculator.getSizeInfo(diameter);
+
+        // Update all displays
+        usSizeDisplay.textContent = sizeInfo.us;
+        ukSizeDisplay.textContent = sizeInfo.british;
+        frSizeDisplay.textContent = sizeInfo.french;
+        deSizeDisplay.textContent = sizeInfo.german;
+        jpSizeDisplay.textContent = sizeInfo.japanese;
+        chSizeDisplay.textContent = sizeInfo.swiss;
+        mmSizeDisplay.textContent = sizeInfo.mm;
+        circSizeDisplay.textContent = `${sizeInfo.circumference} mm`;
+
+        // Handle custom sizing for uncommon measurements
+        const customSizeDisplay = document.getElementById('custom-size');
+        const isStandardSize = ringSizeCalculator.ringSizes.some(size =>
+          Math.abs(size.mm - diameter) < 0.1
+        );
+
+        if (isStandardSize) {
+          customSizeDisplay.textContent = "Standard";
+          customSizeDisplay.parentElement.style.backgroundColor = "#fff8e1";
+        } else {
+          customSizeDisplay.textContent = "Custom Size";
+          customSizeDisplay.parentElement.style.backgroundColor = "#e1f5fe";
+        }
+      }
+
+      // Event listeners
+      canvas.addEventListener('click', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        centerX = e.clientX - rect.left;
+        centerY = e.clientY - rect.top;
+        drawCircle();
+      });
+
+      canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault(); // Prevent scrolling
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          const rect = canvas.getBoundingClientRect();
+          centerX = touch.clientX - rect.left;
+          centerY = touch.clientY - rect.top;
+          drawCircle();
+        }
+      }, { passive: false });
+
+      decreaseBtn.addEventListener('click', function() {
+        if (diameter > 0.5) {
+          diameter -= parseFloat(incrementSelect.value);
+          if (diameter < 0.5) diameter = 0.5; // Minimum diameter
+          drawCircle();
+        }
+      });
+
+      increaseBtn.addEventListener('click', function() {
+        diameter += parseFloat(incrementSelect.value);
+        if (diameter > 30) diameter = 30; // Maximum diameter
+        drawCircle();
+      });
+
+      incrementSelect.addEventListener('change', function() {
+        increment = parseFloat(this.value);
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', resizeCanvas);
+
+      // Initial setup
+      resizeCanvas();
+    });
+  </script>
+</body>
+</html>
