@@ -415,15 +415,38 @@
       }
 
       // Convert mm to pixels based on device pixel density
-      function mmToPixels(mm) {
-        // Standard pixel density is 96 DPI (dots per inch)
-        // 1 inch = 25.4 mm
-        // So 1 mm = 96/25.4 pixels in standard density
-        const pixelRatio = getPixelRatio(ctx);
+      function getDPIFromDevice() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes("iphone x")) return 458;
+  if (ua.includes("iphone xs")) return 458;
+  if (ua.includes("iphone xs max")) return 458;
+  if (ua.includes("iphone xr")) return 326;
+  if (ua.includes("iphone 11")) return 326;
+  if (ua.includes("iphone 11 pro")) return 458;
+  if (ua.includes("iphone 11 pro max")) return 458;
+  if (ua.includes("iphone 12")) return 460;
+  if (ua.includes("iphone 12 mini")) return 476;
+  if (ua.includes("iphone 12 pro")) return 460;
+  if (ua.includes("iphone 12 pro max")) return 458;
+  if (ua.includes("iphone 13")) return 460;
+  if (ua.includes("iphone 13 mini")) return 476;
+  if (ua.includes("iphone 13 pro")) return 460;
+  if (ua.includes("iphone 13 pro max")) return 458;
+  if (ua.includes("iphone 14")) return 460;
+  if (ua.includes("iphone 14 plus")) return 458;
+  if (ua.includes("iphone 14 pro")) return 460;
+  if (ua.includes("iphone 14 pro max")) return 460;
+  if (ua.includes("iphone 15")) return 460;
+  if (ua.includes("iphone 15 plus")) return 458;
+  if (ua.includes("iphone 15 pro")) return 460;
+  if (ua.includes("iphone 15 pro max")) return 460;
+  return 96; // default fallback
+}
 
-        // This is a key calculation for accuracy - applying device pixel ratio
-        return (mm * 96 / 25.4) * pixelRatio;
-      }
+function mmToPixels(mm) {
+  const dpi = getDPIFromDevice();
+  return (mm * dpi) / 25.4;
+}
 
       // Function to draw the circle with concentric borders
       function drawCircle() {
