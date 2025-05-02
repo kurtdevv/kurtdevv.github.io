@@ -28,7 +28,7 @@
       text-align: center;
     }
 
-    .controls {
+    .step-container {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,6 +39,54 @@
       padding: 15px;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .calibration-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-reference {
+      width: 53.98mm;  /* Standard credit card width */
+      height: 15mm;   /* Reduced height for visual clarity */
+      border: 2px solid #333;
+      border-radius: 4px;
+      margin: 15px 0;
+      background-color: #e9f5ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .slider-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .slider-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    input[type="range"] {
+      width: 90%;
+      margin-bottom: 10px;
     }
 
     .size-display {
@@ -83,7 +131,7 @@
       width: 100%;
     }
 
-    .adjust-button { font-size: 18px; touch-action: manipulation;
+    .adjust-button {
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -98,6 +146,8 @@
       user-select: none;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       transition: background-color 0.2s;
+      touch-action: manipulation;
+      font-size: 18px;
     }
 
     .adjust-button:hover {
@@ -145,12 +195,15 @@
       cursor: pointer;
     }
 
-    canvas { width: 100%; height: auto; max-height: 80vh; touch-action: none;
+    canvas {
       border: 1px solid #ddd;
       background-color: white;
       max-width: 100%;
       height: auto;
       touch-action: none;
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
     }
 
     .disclaimer {
@@ -159,6 +212,49 @@
       text-align: center;
       margin-top: 20px;
       max-width: 500px;
+    }
+
+    .print-button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    .print-button:hover {
+      background-color: #45a049;
+    }
+
+    .steps-nav {
+      display: flex;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .step-indicator {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      background-color: #e0e0e0;
+      color: #666;
+      font-weight: bold;
+      border-right: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .step-indicator:last-child {
+      border-right: none;
+    }
+
+    .step-indicator.active {
+      background-color: #4a90e2;
+      color: white;
     }
 
     @media (max-width: 600px) {
@@ -171,18 +267,68 @@
       }
     }
 
-    .credit {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #999;
+    @media print {
+      .steps-nav, .calibration-container, .step-indicator, .adjust-button,
+      .standard-selector, input[type="range"], .slider-container {
+        display: none !important;
+      }
+
+      body {
+        background-color: white;
+        padding: 0;
+      }
+
+      .step-container {
+        box-shadow: none;
+        border: none;
+        page-break-inside: avoid;
+      }
+
+      .print-button {
+        display: none;
+      }
+
+      .ring-measurement-title {
+        font-size: 24px;
+        margin-top: 20px;
+      }
+
+      .ring-measurement-result {
+        font-size: 18px;
+        margin: 10px 0;
+        text-align: center;
+      }
     }
-  </style>
+    </style>
 </head>
 <body>
 <h1>What's My Ring Size?</h1>
 <p class="instruction" style="margin-top: -5px; margin-bottom: 15px;">International ring sizing guide</p>
 
-<div class="controls">
+<div class="steps-nav">
+    <div class="step-indicator active" data-step="1">Step 1: Calibrate</div>
+    <div class="step-indicator" data-step="2">Step 2: Measure</div>
+</div>
+
+<div id="step1" class="step-container">
+    <div class="step-title">Step 1: Calibrate your screen</div>
+    <p class="instruction">Adjust the slider until the rectangle below matches the width of your credit card (53.98mm)</p>
+
+    <div class="calibration-container">
+        <div id="card-reference" class="card-reference">Credit Card Width (53.98mm)</div>
+
+        <div class="slider-container">
+            <p class="slider-label">Adjust Size:</p>
+            <input type="range" id="calibration-slider" min="50" max="150" value="100" step="1">
+            <p class="slider-label" id="scale-value">Scale: 100%</p>
+        </div>
+
+        <button id="calibration-done" class="print-button">Confirm Calibration</button>
+    </div>
+</div>
+
+<div id="step2" class="step-container" style="display: none;">
+    <div class="step-title">Step 2: Measure your ring size</div>
     <p class="instruction">Tap or click to set the center of the circle, then adjust the size using the buttons below until the white circle matches your ring or finger.</p>
 
     <div class="size-display">
@@ -222,9 +368,8 @@
             <div class="size-label">Circumference</div>
             <div class="size-value" id="circ-size">-</div>
         </div>
-        <div class="size-card" style="background-color: #fff8e1;">
-            <div class="size-label">Custom Size</div>
-            <div class="size-value" id="custom-size">-</div>
+        <div class="size-card">
+            <button id="print-button" class="print-button">Print Results</button>
         </div>
     </div>
 
@@ -245,7 +390,7 @@
     <canvas id="ringCanvas"></canvas>
 </div>
 
-<p class="disclaimer">For the most accurate results, ensure your device display is correctly calibrated. This tool provides an estimation and is not a substitute for professional sizing. Custom sizes (not aligned with standard measurements) are available from many jewelers and can be manufactured upon request.</p>
+<p class="disclaimer">For the most accurate results, ensure your device display is correctly calibrated using the credit card method. This tool provides an estimation and is not a substitute for professional sizing.</p>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -257,14 +402,21 @@
       const incrementSelect = document.getElementById('increment-select');
       const usSizeDisplay = document.getElementById('us-size');
       const ukSizeDisplay = document.getElementById('uk-size');
-      const euSizeDisplay = document.getElementById('eu-size');
-      const mmSizeDisplay = document.getElementById('mm-size');
+      const calibrationSlider = document.getElementById('calibration-slider');
+      const calibrationDoneBtn = document.getElementById('calibration-done');
+      const scaleValueDisplay = document.getElementById('scale-value');
+      const cardReference = document.getElementById('card-reference');
+      const step1Container = document.getElementById('step1');
+      const step2Container = document.getElementById('step2');
+      const stepIndicators = document.querySelectorAll('.step-indicator');
+      const printButton = document.getElementById('print-button');
 
       // Initialize variables
       let centerX = null;
       let centerY = null;
       let diameter = 17.0; // Starting diameter in mm
       let increment = 0.5; // Default increment
+      let pixelRatio = 1; // Default pixel ratio - will be calibrated
 
       // RingSizeCalculator class for managing ring size data and conversions
       class RingSizeCalculator {
@@ -390,12 +542,6 @@
       // Create an instance of the calculator
       const ringSizeCalculator = new RingSizeCalculator();
 
-      // Function to get the physical pixel ratio of the device
-      function getPixelRatio(context) {
-        const dpr = window.devicePixelRatio || 1;
-        return dpr;
-      }
-
       // Function to resize canvas to fit the container and maintain aspect ratio
       function resizeCanvas() {
         const container = document.querySelector('.canvas-container');
@@ -414,39 +560,10 @@
         drawCircle();
       }
 
-      // Convert mm to pixels based on device pixel density
-      function getDPIFromDevice() {
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.includes("iphone x")) return 458;
-  if (ua.includes("iphone xs")) return 458;
-  if (ua.includes("iphone xs max")) return 458;
-  if (ua.includes("iphone xr")) return 326;
-  if (ua.includes("iphone 11")) return 326;
-  if (ua.includes("iphone 11 pro")) return 458;
-  if (ua.includes("iphone 11 pro max")) return 458;
-  if (ua.includes("iphone 12")) return 460;
-  if (ua.includes("iphone 12 mini")) return 476;
-  if (ua.includes("iphone 12 pro")) return 460;
-  if (ua.includes("iphone 12 pro max")) return 458;
-  if (ua.includes("iphone 13")) return 460;
-  if (ua.includes("iphone 13 mini")) return 476;
-  if (ua.includes("iphone 13 pro")) return 460;
-  if (ua.includes("iphone 13 pro max")) return 458;
-  if (ua.includes("iphone 14")) return 460;
-  if (ua.includes("iphone 14 plus")) return 458;
-  if (ua.includes("iphone 14 pro")) return 460;
-  if (ua.includes("iphone 14 pro max")) return 460;
-  if (ua.includes("iphone 15")) return 460;
-  if (ua.includes("iphone 15 plus")) return 458;
-  if (ua.includes("iphone 15 pro")) return 460;
-  if (ua.includes("iphone 15 pro max")) return 460;
-  return 96; // default fallback
-}
-
-function mmToPixels(mm) {
-  const dpi = getDPIFromDevice();
-  return (mm * dpi) / 25.4;
-}
+      // Convert mm to pixels based on calibrated scaling factor
+      function mmToPixels(mm) {
+        return (mm * pixelRatio);
+      }
 
       // Function to draw the circle with concentric borders
       function drawCircle() {
@@ -461,13 +578,13 @@ function mmToPixels(mm) {
         // Draw red outer border (2mm wider) - more visible now
         ctx.beginPath();
         ctx.arc(centerX, centerY, radiusInPixels + mmToPixels(2), 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)'; // Increased opacity from 0.2 to 0.4
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
         ctx.fill();
 
         // Draw green middle border (1mm wider) - more visible now
         ctx.beginPath();
         ctx.arc(centerX, centerY, radiusInPixels + mmToPixels(1), 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 180, 0, 0.4)'; // Changed from 255 to 180 for deeper green and 0.2 to 0.4 opacity
+        ctx.fillStyle = 'rgba(0, 180, 0, 0.4)';
         ctx.fill();
 
         // Draw white circle (actual size)
@@ -501,12 +618,13 @@ function mmToPixels(mm) {
         updateRingSizeDisplays();
       }
 
-      // Get references to the new size displays
+      // Get references to the size displays
       const frSizeDisplay = document.getElementById('fr-size');
       const deSizeDisplay = document.getElementById('de-size');
       const jpSizeDisplay = document.getElementById('jp-size');
       const chSizeDisplay = document.getElementById('ch-size');
       const circSizeDisplay = document.getElementById('circ-size');
+      const mmSizeDisplay = document.getElementById('mm-size');
 
       // Function to update all ring size displays using the calculator
       function updateRingSizeDisplays() {
@@ -522,23 +640,63 @@ function mmToPixels(mm) {
         chSizeDisplay.textContent = sizeInfo.swiss;
         mmSizeDisplay.textContent = sizeInfo.mm;
         circSizeDisplay.textContent = `${sizeInfo.circumference} mm`;
-
-        // Handle custom sizing for uncommon measurements
-        const customSizeDisplay = document.getElementById('custom-size');
-        const isStandardSize = ringSizeCalculator.ringSizes.some(size =>
-          Math.abs(size.mm - diameter) < 0.1
-        );
-
-        if (isStandardSize) {
-          customSizeDisplay.textContent = "Standard";
-          customSizeDisplay.parentElement.style.backgroundColor = "#fff8e1";
-        } else {
-          customSizeDisplay.textContent = "Custom Size";
-          customSizeDisplay.parentElement.style.backgroundColor = "#e1f5fe";
-        }
       }
 
-      // Event listeners
+      // Calibration functions
+      function updateCalibration() {
+        const scalePercent = calibrationSlider.value;
+        scaleValueDisplay.textContent = `Scale: ${scalePercent}%`;
+
+        // Update the size of the credit card reference
+        // Standard credit card width is 53.98mm
+        const standardCardWidth = 53.98; // mm
+        const scaledWidth = (standardCardWidth * scalePercent / 100);
+
+        // Update the width in pixels - this is purely visual for the calibration step
+        cardReference.style.width = `${scaledWidth}mm`;
+
+        // Calculate the pixel ratio - how many pixels per mm
+        // This will be used for accurate measurements in the ring sizing step
+        const cardElement = document.getElementById('card-reference');
+        const cardWidthInPixels = cardElement.offsetWidth;
+        pixelRatio = cardWidthInPixels / standardCardWidth;
+      }
+
+      // Event Listeners
+      calibrationSlider.addEventListener('input', updateCalibration);
+
+      calibrationDoneBtn.addEventListener('click', function() {
+        // Switch to step 2
+        step1Container.style.display = 'none';
+        step2Container.style.display = 'flex';
+
+        // Update step indicators
+        stepIndicators.forEach(ind => ind.classList.remove('active'));
+        document.querySelector('[data-step="2"]').classList.add('active');
+
+        // Re-calculate based on new calibration
+        resizeCanvas();
+      });
+
+      // Step navigation
+      stepIndicators.forEach(indicator => {
+        indicator.addEventListener('click', function() {
+          const step = this.getAttribute('data-step');
+
+          stepIndicators.forEach(ind => ind.classList.remove('active'));
+          this.classList.add('active');
+
+          if (step === "1") {
+            step1Container.style.display = 'flex';
+            step2Container.style.display = 'none';
+          } else {
+            step1Container.style.display = 'none';
+            step2Container.style.display = 'flex';
+            resizeCanvas();
+          }
+        });
+      });
+
       canvas.addEventListener('click', function(e) {
         const rect = canvas.getBoundingClientRect();
         centerX = e.clientX - rect.left;
@@ -575,10 +733,33 @@ function mmToPixels(mm) {
         increment = parseFloat(this.value);
       });
 
+      // Print functionality
+      printButton.addEventListener('click', function() {
+        // Create print-specific elements before printing
+        const printInfo = document.createElement('div');
+        printInfo.innerHTML = `
+          <h2 class="ring-measurement-title">Ring Size Measurement Results</h2>
+          <p class="ring-measurement-result">US/CAN Size: ${usSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">UK/AU Size: ${ukSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">EU/FR Size: ${frSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">German Size: ${deSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">Japanese Size: ${jpSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">Swiss Size: ${chSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">Inner Diameter: ${mmSizeDisplay.textContent} mm</p>
+          <p class="ring-measurement-result">Inner Circumference: ${circSizeDisplay.textContent}</p>
+          <p class="ring-measurement-result">Date: ${new Date().toLocaleDateString()}</p>
+        `;
+
+        document.body.appendChild(printInfo);
+        window.print();
+        document.body.removeChild(printInfo);
+      });
+
       // Handle window resize
       window.addEventListener('resize', resizeCanvas);
 
       // Initial setup
+      updateCalibration();
       resizeCanvas();
     });
   </script>
